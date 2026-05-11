@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User List</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f4f6;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #6366f1;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Registered Users</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>College</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Nationality</th>
+            <th>State</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+</table>
+
+<script>
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let table = document.getElementById("userTable");
+
+function loadUsers() {
+    table.innerHTML = "";
+
+    if (users.length === 0) {
+        table.innerHTML = "<tr><td colspan='9'>No users found</td></tr>";
+        return;
+    }
+
+    users.forEach((user, index) => {
+        let row = table.insertRow();
+
+        row.insertCell(0).innerText = user.name;
+        row.insertCell(1).innerText = user.email;
+        row.insertCell(2).innerText = user.mobile;
+        row.insertCell(3).innerText = user.college_Name;
+        row.insertCell(4).innerText = user.dob;
+        row.insertCell(5).innerText = user.gender;
+        row.insertCell(6).innerText = user.nationality;
+        row.insertCell(7).innerText = user.state;
+
+        row.insertCell(8).innerHTML =
+            `<button onclick="deleteUser(${index})">Delete</button>`;
+    });
+}
+
+function deleteUser(index) {
+    if (confirm("Delete this user?")) {
+        users.splice(index, 1);
+        localStorage.setItem("users", JSON.stringify(users));
+        loadUsers();
+    }
+}
+
+loadUsers();
+</script>
+
+</body>
+</html>

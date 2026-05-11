@@ -1,0 +1,13 @@
+git init
+git status
+git add .
+git status
+git commit -m "first commit"
+git branch -M main 
+git remote add origin url//  connect to repo
+git push -u origin main
+
+now edit 
+git add .
+git commit -m "modified"
+git push 

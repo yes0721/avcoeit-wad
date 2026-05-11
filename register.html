@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration - Visible Data</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #10b981;
+            --text-main: #1f2937;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 { margin-top: 0; color: #111827; }
+
+        
+        .form-group {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: ring 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reg { background: var(--primary-color); color: white; width: 100%; }
+        .btn-add { background: var(--secondary-color); color: white; margin-bottom: 1rem; }
+        button:hover { opacity: 0.9; }
+
+        /* Table Styling */
+        .table-container { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            background: #f9fafb;
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-family: 'Courier New', Courier, monospace; /* Makes passwords easier to read */
+        }
+
+        .pass-cell { color: #d97706; font-weight: bold; }
+
+        #userSection { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="formSection">
+        <h2>Create Account</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <input type="text" id="first_name" placeholder="Fist Name" required>
+                <input type="text" id="Last_Name" placeholder="Last Name" required>
+                <input type="text" id="rollno" placeholder="Roll No" required>
+                <input type="text" id="college_name" placeholder="College Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                
+            </div>
+            <button type="submit" class="btn-reg">Register User</button>
+        </form>
+    </div>
+
+    <div id="userSection">
+        <h2>Registered Users</h2>
+        <button class="btn-add" onclick="showForm()">+ Add Another User</button>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Roll No</th>
+                        <th>College Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+
+                    </tr>
+                </thead>
+                <tbody id="userTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+document.getElementById("registerForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    // Correctly grabbing values
+    let First_Name = document.getElementById("name").value;
+    let Last_Name = document.getElementById("name").value;
+    let rollNoVal = document.getElementById("rollno").value;
+    let collegename= document.getElementById("college_name").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    let userData = {
+        first_name: firstname,
+        last_name:lastname,
+        roll_no: rollNoVal, 
+        College_name:collegename,
+        email: email,
+        password: password
+    };
+
+    fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        users.push(userData);
+        localStorage.setItem("users", JSON.stringify(users));
+
+        document.getElementById("registerForm").reset();
+        displayUsers();
+
+        document.getElementById("formSection").style.display = "none";
+        document.getElementById("userSection").style.display = "block";
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+function displayUsers() {
+    let tableBody = document.getElementById("userTable");
+    tableBody.innerHTML = "";
+
+    // Refreshing users from local storage
+    let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    storedUsers.forEach(function(user) {
+        let row = `
+            <tr>
+                <td>${user.first_name}</td>
+                <td>${user.last_name}</td>
+                <td>${user.roll_no}</td>
+                <td>${user.collegename}</td>
+                <td>${user.email}</td>
+                <td class="pass-cell">${user.password}</td> 
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+}
+
+function showForm() {
+    document.getElementById("formSection").style.display = "block";
+    document.getElementById("userSection").style.display = "none";
+}
+
+// Check on load
+if(users.length > 0){
+    displayUsers();
+    document.getElementById("formSection").style.display = "none";
+    document.getElementById("userSection").style.display = "block";
+}
+</script>
+
+</script>
+
+</body>
+</body>
+</html>

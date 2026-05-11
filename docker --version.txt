@@ -1,0 +1,23 @@
+docker --version
+docker images// to check available images
+
+docker ps // to check container 
+
+docker pull openjdk:27-ea-trixie
+
+docker run --name JAVA -it -d openjdk:27-ea-trixie
+
+docker ps// to check container 
+
+docker exec -it JAVA jshell//for going to jshell ie java environment 
+
+System.out.println("Hello Docker");
+int a=10;
+int b=20;
+System.out.println(a+b);
+/exit-->exit from jshell
+docker stop container id// to stop container  
+
+docker container rm container id // to remove container 
+
+docker image prune//delete image 
